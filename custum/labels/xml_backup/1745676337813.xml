@@ -1,0 +1,26 @@
+<annotation>
+	<folder>train</folder>
+	<filename>1745676337813.jpg</filename>
+	<path>/Users/jty/Desktop/moli/custum/images/train/1745676337813.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>1920</width>
+		<height>1080</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>blue</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>656</xmin>
+			<ymin>79</ymin>
+			<xmax>1284</xmax>
+			<ymax>803</ymax>
+		</bndbox>
+	</object>
+</annotation>
