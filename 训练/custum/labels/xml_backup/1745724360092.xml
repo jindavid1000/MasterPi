@@ -1,0 +1,26 @@
+<annotation>
+	<folder>new_samples</folder>
+	<filename>1745724360092.jpg</filename>
+	<path>/Users/jty/Desktop/moli/custum/images/new_samples/1745724360092.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>1920</width>
+		<height>1080</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>red</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>824</xmin>
+			<ymin>240</ymin>
+			<xmax>1328</xmax>
+			<ymax>829</ymax>
+		</bndbox>
+	</object>
+</annotation>

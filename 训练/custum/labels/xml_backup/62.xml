@@ -1,0 +1,77 @@
+<?xml version="1.0" ?>
+<annotation>
+    
+    
+    <folder>red</folder>
+    
+    
+    <filename>62.jpg</filename>
+    
+    
+    <path>/Users/jty/Desktop/moli/custum/images/train/red/62.jpg</path>
+    
+    
+    <source>
+        
+        
+        <database>Unknown</database>
+        
+    
+    </source>
+    
+    
+    <size>
+        
+        
+        <width>1920</width>
+        
+        
+        <height>1080</height>
+        
+        
+        <depth>3</depth>
+        
+    
+    </size>
+    
+    
+    <segmented>0</segmented>
+    
+    
+    <object>
+        
+        
+        <name>red</name>
+        
+        
+        <pose>Unspecified</pose>
+        
+        
+        <truncated>0</truncated>
+        
+        
+        <difficult>0</difficult>
+        
+        
+        <bndbox>
+            
+            
+            <xmin>1000</xmin>
+            
+            
+            <ymin>268</ymin>
+            
+            
+            <xmax>1663</xmax>
+            
+            
+            <ymax>1013</ymax>
+            
+        
+        </bndbox>
+        
+    
+    </object>
+    
+
+</annotation>
