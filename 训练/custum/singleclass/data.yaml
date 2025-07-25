@@ -1,0 +1,6 @@
+path: ./singleclass
+train: images/train
+val: images/val
+
+nc: 1
+names: ['object']

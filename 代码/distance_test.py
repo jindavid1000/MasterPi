@@ -7,7 +7,7 @@ import json
 import os
 
 class DistanceTester:
-    def __init__(self, known_width, model_path="/Users/jty/Desktop/moli/模型/runs/detect/train2/weights/best.pt"):
+    def __init__(self, known_width, model_path="/Users/jty_1/Desktop/MasterPi/代码/best.pt"):
         """
         初始化距离测试器
         """
@@ -16,6 +16,20 @@ class DistanceTester:
         self.measurements = []  # 测量距离
         self.pixel_widths = []  # 像素宽度
         self.calibration_file = "calibration_params.json"
+
+        if model_path.endswith(".pt"):
+            self.export_to_ncnn(model_path)
+
+    def export_to_ncnn(self, model_path):
+        """
+        将YOLO模型导出为NCNN格式
+        """
+        try:
+            model = YOLO(model_path)
+            model.export(format="ncnn")
+            print("模型已成功导出为NCNN格式")
+        except Exception as e:
+            print(f"模型导出失败: {e}")
         
     def load_calibration_params(self):
         """
@@ -213,19 +227,21 @@ class DistanceTester:
             print(f"像素宽度: {px:.1f}, 补偿因子: {factor:.3f}")
 
 def main():
-    # 获取实际物体宽度
-    while True:
-        try:
-            known_width = float(input("请输入物体实际宽度(厘米): "))
-            if known_width > 0:
-                break
-            else:
-                print("宽度必须大于0")
-        except ValueError:
-            print("请输入有效的数字")
+    parser = argparse.ArgumentParser(description='距离测试和校正工具')
+    parser.add_argument('--known-width', type=float, required=True,
+                      help='目标物体的实际宽度(厘米)')
+    parser.add_argument('--model', type=str, default='/Users/jty/Desktop/moli/模型/runs/detect/train2/weights/best.pt',
+                      help='YOLO模型路径')
+    parser.add_argument('--use-ncnn', action='store_true',
+                        help='使用NCNN模型进行推理')
+    args = parser.parse_args()
     
+    model_path = args.model
+    if args.use_ncnn:
+        model_path = model_path.replace('.pt', '_ncnn_model')
+
     # 创建测试器实例
-    tester = DistanceTester(known_width=known_width)
+    tester = DistanceTester(known_width=args.known_width, model_path=model_path)
     
     # 收集数据
     tester.collect_data()

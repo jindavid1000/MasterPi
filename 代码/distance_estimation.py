@@ -6,7 +6,7 @@ from ultralytics import YOLO
 import json
 
 class DistanceEstimator:
-    def __init__(self, known_width, model_path="/Users/jty/Desktop/moli/模型/runs/detect/train2/weights/best.pt"):
+    def __init__(self, known_width, model_path="/Users/jty_1/Desktop/MasterPi/代码/best.pt"):
         """
         初始化距离估计器
         
@@ -16,9 +16,25 @@ class DistanceEstimator:
         """
         self.known_width = known_width
         self.focal_length = 1506.67  # 初始焦距
-        self.model = YOLO(model_path)
+        
+        if model_path.endswith(".pt"):
+            self.model = YOLO(model_path)
+            self.export_to_ncnn()
+        else:
+            self.model = YOLO(model_path)
+
         self.calibration_file = "calibration_params.json"
         self.load_calibration_params()
+
+    def export_to_ncnn(self):
+        """
+        将YOLO模型导出为NCNN格式
+        """
+        try:
+            self.model.export(format="ncnn")
+            print("模型已成功导出为NCNN格式")
+        except Exception as e:
+            print(f"模型导出失败: {e}")
         
     def load_calibration_params(self):
         """
@@ -254,11 +270,17 @@ def main():
                       help='YOLO模型路径')
     parser.add_argument('--target-class', type=int,
                       help='目标类别ID（可选）')
+    parser.add_argument('--use-ncnn', action='store_true',
+                        help='使用NCNN模型进行推理')
     args = parser.parse_args()
     
+    model_path = args.model
+    if args.use_ncnn:
+        model_path = model_path.replace('.pt', '_ncnn_model')
+
     # 初始化距离估计器
     estimator = DistanceEstimator(known_width=args.known_width,
-                                model_path=args.model)
+                                model_path=model_path)
     
     # 打开摄像头
     cap = cv2.VideoCapture(0)

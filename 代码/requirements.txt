@@ -1,0 +1,13 @@
+pyyaml
+opencv-python
+numpy
+werkzeug
+jsonrpc-py
+RPi.GPIO
+smbus2
+rpi_ws281x
+matplotlib
+torch
+ultralytics
+pandas
+Pillow

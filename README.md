@@ -1,67 +1,93 @@
-# 基于单目视觉的距离估计工具
+# MasterPi 单目视觉距离估计与目标检测系统
 
-这个工具使用单目摄像头通过已知物体大小来估计物体到摄像头的距离。它基于针孔相机模型和相似三角形原理。
+本项目基于YOLO模型，支持PyTorch（ultralytics）和ncnn两种推理后端，实现了单目摄像头下的目标检测与距离估计。适用于树莓派和PC，支持摄像头实时推理、模型校准、效率对比等功能。
 
-## 原理
+---
 
-距离估计基于以下公式：
+## 目录结构
 
-1. 相机校准：F = (P × D) / W
-2. 距离估计：D = (W × F) / P
+- `代码/`：主程序、校准、测试等Python脚本
+- `模型/best_ncnn_model/`：ncnn模型及推理脚本
+- `模型/` 其他目录：训练、转换等相关文件
 
-其中：
-- F 是焦距（像素）
-- P 是物体在图像中的像素宽度
-- D 是物体到摄像头的距离（厘米）
-- W 是物体的实际宽度（厘米）
+---
 
-## 安装依赖
+## 依赖环境
 
-```bash
-pip install opencv-python numpy
-```
+### 通用依赖
+- Python >= 3.8
+- numpy
+- opencv-python
+- matplotlib
+- pillow
 
-## 使用方法
+### PyTorch/ultralytics 相关
+- torch
+- ultralytics
 
-### 1. 相机校准
+### ncnn 相关
+- ncnn Python binding（需自行编译，详见[官方文档](https://github.com/Tencent/ncnn/wiki/Python%E7%BB%91%E5%AE%9A)）
 
-首先需要校准相机焦距：
-
-```bash
-python distance_estimation.py --known-width 10 --calibrate --known-distance 50 --color red
-```
-
-参数说明：
-- `--known-width`: 目标物体的实际宽度（厘米）
-- `--calibrate`: 启用校准模式
-- `--known-distance`: 校准时物体到摄像头的距离（厘米）
-- `--color`: 要检测的物体颜色（red, green, blue, yellow）
-
-校准时，将已知宽度的物体放在已知距离处，然后按下'c'键进行校准。
-
-### 2. 距离估计
-
-校准完成后，程序会自动进入距离估计模式：
+### 推荐安装命令
 
 ```bash
-python distance_estimation.py --known-width 10 --color red
+# 系统依赖
+sudo apt update
+sudo apt install python3-opencv python3-pip python3-venv python3-dev cmake
+
+# Python依赖（建议虚拟环境）
+pip install numpy matplotlib pillow torch ultralytics
+# ncnn Python包需源码编译安装
 ```
 
-如果已经校准过相机，可以直接运行上面的命令进行距离估计。
+---
 
-## 注意事项
+## 模型准备
 
-1. 校准时应使用与实际测量相同的物体
-2. 确保物体颜色与选择的颜色范围匹配
-3. 光照条件会影响颜色检测效果
-4. 摄像头应保持固定，避免移动或更换，否则需要重新校准
+- PyTorch/ultralytics: 直接使用 `yolov8n.pt` 或你自己训练的 `best.pt`
+- ncnn: 使用 `model.ncnn.param` 和 `model.ncnn.bin`（可用ultralytics导出或ncnn官方工具转换）
 
-## 颜色范围
+---
 
-程序预设了以下颜色范围（HSV格式）：
-- 红色：(0, 100, 100) 到 (10, 255, 255)
-- 绿色：(35, 100, 100) 到 (85, 255, 255)
-- 蓝色：(100, 100, 100) 到 (140, 255, 255)
-- 黄色：(20, 100, 100) 到 (35, 255, 255)
+## 校准与测试流程
 
-如需调整颜色范围，可以修改源代码中的`color_ranges`字典。
+1. **采集校准数据**
+   ```bash
+   python3 distance_test.py --known-width 物体宽度
+   # 按提示操作，按s保存测量，输入实际距离
+   ```
+2. **主程序推理**
+```bash
+   python3 distance_estimation.py --known-width 物体宽度 --model yolov8n.pt --target-class 0
+```
+3. **ncnn推理效率与摄像头实时推理**
+```bash
+   cd 模型/best_ncnn_model
+   python3 ncnn_vs_pt_benchmark.py
+   # 或直接摄像头实时推理
+   python3 ncnn_vs_pt_benchmark.py
+   ```
+
+---
+
+## 摄像头实时推理（ncnn）
+
+- 运行 `ncnn_vs_pt_benchmark.py`，支持摄像头实时画面、推理耗时统计、检测框可视化。
+- 按 `q` 退出。
+
+---
+
+## 常见问题
+
+- **ncnn Python包无法导入**：需源码编译，见[官方文档](https://github.com/Tencent/ncnn/wiki/Python%E7%BB%91%E5%AE%9A)。
+- **模型文件找不到**：请确认 `model.ncnn.param`、`model.ncnn.bin`、`yolov8n.pt` 路径正确。
+- **摄像头无法打开**：检查硬件连接、驱动和权限。
+- **中文字体警告**：matplotlib画图时可忽略。
+
+---
+
+## 参考
+- [ncnn官方文档](https://github.com/Tencent/ncnn)
+- [ultralytics YOLO文档](https://docs.ultralytics.com/)
+
+如有问题欢迎提issue或联系作者。
